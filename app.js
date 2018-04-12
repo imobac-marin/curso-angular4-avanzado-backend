@@ -7,6 +7,8 @@ var app = express();
 
 // cargar rutas
 
+var userRoutes = require('./routes/user');
+
 // Middlewares de body-parser
 
 app.use(bodyParser.urlencoded({
@@ -15,6 +17,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Configurar cabeceras y CORS
+
+// rutas base
+app.use('/api', userRoutes);
 
 // rutas body-parser
 
