@@ -26,27 +26,43 @@ function saveUser(req, res) {
         usuario.role = params.role;
         usuario.image = null;
 
-        //Cifrar contraseña
-        bcrypt.hash(params.password, null, null, function (err, hash) {
-            usuario.password = hash;
-            //Guardar usuario en la bd
-            usuario.save((err, userStored) => {
-                if (err) {
-                    res.status(500).send({
-                        message: 'Error al guardar el usuario'
+        user.findOne({
+            email: usuario.email.toLowerCase()
+        }, (err, user) => {
+            if (err) {
+                res.status(500).send({
+                    message: 'Error al comprobar el usuario'
+                });
+            } else {
+                if (!user) {
+                    //Cifrar contraseña
+                    bcrypt.hash(params.password, null, null, function (err, hash) {
+                        usuario.password = hash;
+                        //Guardar usuario en la bd
+                        usuario.save((err, userStored) => {
+                            if (err) {
+                                res.status(500).send({
+                                    message: 'Error al guardar el usuario'
+                                });
+                            } else {
+                                if (!userStored) {
+                                    res.status(404).send({
+                                        message: 'No se ha registrado el usuario para poder registrar el usuario'
+                                    });
+                                } else {
+                                    res.status(200).send({
+                                        usuario: userStored
+                                    });
+                                }
+                            }
+                        });
                     });
                 } else {
-                    if (!userStored) {
-                        res.status(404).send({
-                            message: 'No se ha registrado el usuario para poder registrar el usuario'
-                        });
-                    } else {
-                        res.status(200).send({
-                            usuario: userStored
-                        });
-                    }
+                    res.status(200).send({
+                        message: 'El usuario no puede registrarse'
+                    });
                 }
-            });
+            }
         });
     } else {
         res.status(200).send({
