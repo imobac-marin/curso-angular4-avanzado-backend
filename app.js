@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.get('/probando', (req, res) => {
     res.status(200).send({
         message: 'Este es el método probando'
-    })
+    });
 });
 
 module.exports = app;
