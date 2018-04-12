@@ -1,0 +1,11 @@
+{
+  "name": "curso-angular4-avanzado-backend",
+  "version": "1.0.0",
+  "description": "Api RESTful del proyecto del curso de Angular 4 avanzado",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Imobac Marín",
+  "license": "MIT"
+}
