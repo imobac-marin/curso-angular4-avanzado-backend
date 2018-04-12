@@ -4,6 +4,7 @@
   "description": "Api RESTful del proyecto del curso de Angular 4 avanzado",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Imobac Marín",
@@ -18,6 +19,7 @@
     "mongoose": "^5.0.14"
   },
   "devDependencies": {
+    "eslint-config-google": "^0.9.1",
     "nodemon": "^1.17.3"
   }
 }
