@@ -71,7 +71,42 @@ function saveUser(req, res) {
     }
 }
 
+function login(req, res) {
+    var params = req.body;
+    var email = params.email;
+    var password = params.password;
+
+    user.findOne({
+        email: email.toLowerCase()
+    }, (err, isUser) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error al comprobar el usuario'
+            });
+        } else {
+            if (isUser) {
+                bcrypt.compare(password, isUser.password, (err, check) => {
+                    if (check) {
+                        res.status(200).send({
+                            isUser
+                        });
+                    } else {
+                        res.status(404).send({
+                            message: 'El usuario no ha podido loguearse correctamente'
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send({
+                    message: 'El usuario no ha podido loguearse'
+                });
+            }
+
+        }
+    });
+}
 module.exports = {
     pruebas,
-    saveUser
+    saveUser,
+    login
 };
