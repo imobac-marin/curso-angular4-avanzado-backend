@@ -1,0 +1,16 @@
+'use strict'
+
+var express = require('express');
+var animalController = require('../controllers/animal');
+
+var api = express.Router();
+var mdwAuth = require('../middlewares/authenticated');
+
+var multipart = require('connect-multiparty');
+var mdwUpload = multipart({
+    uploadDir: './uploads/animals'
+});
+
+api.get('/pruebas-animales', mdwAuth.ensureAuth, animalController.pruebas);
+
+module.exports = api;
