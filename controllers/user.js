@@ -1,6 +1,7 @@
 'use strict'
 // modulos
 var bcrypt = require('bcrypt-nodejs');
+var fs = require('fs');
 
 // modelos
 var user = require('../models/user');
@@ -129,7 +130,9 @@ function updateUser(req, res) {
         });
     }
 
-    user.findByIdAndUpdate(userId, update, { new: true }, (err, userUpdated) => {
+    user.findByIdAndUpdate(userId, update, {
+        new: true
+    }, (err, userUpdated) => {
         if (err) {
             res.status(500).send({
                 message: 'Error al actualizar usuario'
@@ -148,9 +151,59 @@ function updateUser(req, res) {
     });
 }
 
+function uploadImage(req, res) {
+    var userId = req.params.id;
+
+    if (req.files) {
+        var filePath = req.files.image.path;
+        var fileSplit = filePath.split('\\');
+        var existingFileName = fileSplit[2];
+        var extensionFileSplit = existingFileName.split('.');
+        var extensionFile = extensionFileSplit[1];
+
+        if (extensionFile.toLowerCase() == 'png' || extensionFile.toLowerCase() == 'jpg' || extensionFile.toLowerCase() == 'jpeg' || extensionFile.toLowerCase() == 'gif') {
+            user.findByIdAndUpdate(userId, { image: existingFileName }, { new: true }, (err, userUpdated) => {
+                if (err) {
+                    res.status(500).send({
+                        message: 'Error al actualizar usuario'
+                    });
+                } else {
+                    if (!userUpdated) {
+                        res.status(404).send({
+                            message: 'No se ha podido actualizar el usuario'
+                        });
+                    } else {
+                        res.status(200).send({
+                            user: userUpdated,
+                            image: existingFileName
+                        });
+                    }
+                }
+            });
+        } else {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    res.status(200).send({
+                        message: 'Extension no válida y no se ha podido borrar el fichero'
+                    });
+                } else {
+                    res.status(200).send({
+                        message: 'Extension no válida'
+                    });
+                }
+            });
+        }
+    } else {
+        res.status(200).send({
+            message: 'No se han subido ficheros'
+        });
+    }
+}
+
 module.exports = {
     pruebas,
     saveUser,
     login,
-    updateUser
+    updateUser,
+    uploadImage
 };
