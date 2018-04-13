@@ -17,5 +17,6 @@ api.post('/login', userController.login);
 api.put('/update-user/:id', mdwAuth.ensureAuth, userController.updateUser);
 api.post('/upload-image-user/:id', [mdwAuth.ensureAuth, mdwUpload], userController.uploadImage);
 api.get('/get-image-file/:imageFile', userController.getImageFile);
+api.get('/keepers', userController.getKeepers);
 
 module.exports = api;

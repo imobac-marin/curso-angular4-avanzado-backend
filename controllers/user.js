@@ -219,11 +219,34 @@ function getImageFile(req, res) {
     });
 }
 
+function getKeepers(req, res) {
+    user.find({
+        role: 'ROLE_ADMIN'
+    }).exec((err, users) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error en la petición'
+            });
+        } else {
+            if (!users) {
+                res.status(404).send({
+                    message: 'No hay cuidadores'
+                });
+            } else {
+                res.status(200).send({
+                    users
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveUser,
     login,
     updateUser,
     uploadImage,
-    getImageFile
+    getImageFile,
+    getKeepers
 };
