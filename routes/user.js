@@ -16,5 +16,6 @@ api.post('/register', userController.saveUser);
 api.post('/login', userController.login);
 api.put('/update-user/:id', mdwAuth.ensureAuth, userController.updateUser);
 api.post('/upload-image-user/:id', [mdwAuth.ensureAuth, mdwUpload], userController.uploadImage);
+api.get('/get-image-file/:imageFile', userController.getImageFile);
 
 module.exports = api;

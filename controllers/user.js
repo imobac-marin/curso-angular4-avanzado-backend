@@ -2,6 +2,7 @@
 // modulos
 var bcrypt = require('bcrypt-nodejs');
 var fs = require('fs');
+var path = require('path');
 
 // modelos
 var user = require('../models/user');
@@ -162,7 +163,11 @@ function uploadImage(req, res) {
         var extensionFile = extensionFileSplit[1];
 
         if (extensionFile.toLowerCase() == 'png' || extensionFile.toLowerCase() == 'jpg' || extensionFile.toLowerCase() == 'jpeg' || extensionFile.toLowerCase() == 'gif') {
-            user.findByIdAndUpdate(userId, { image: existingFileName }, { new: true }, (err, userUpdated) => {
+            user.findByIdAndUpdate(userId, {
+                image: existingFileName
+            }, {
+                new: true
+            }, (err, userUpdated) => {
                 if (err) {
                     res.status(500).send({
                         message: 'Error al actualizar usuario'
@@ -200,10 +205,25 @@ function uploadImage(req, res) {
     }
 }
 
+function getImageFile(req, res) {
+    var imageFile = req.params.imageFile;
+    var pathFile = './uploads/users/' + imageFile;
+    fs.exists(pathFile, function (exists) {
+        if (exists) {
+            res.sendFile(path.resolve(pathFile));
+        } else {
+            res.status(404).send({
+                message: 'No se encuentra la imagen'
+            });
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveUser,
     login,
     updateUser,
-    uploadImage
+    uploadImage,
+    getImageFile
 };
