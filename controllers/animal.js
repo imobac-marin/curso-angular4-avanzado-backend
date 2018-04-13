@@ -99,9 +99,33 @@ function getAnimal(req, res) {
     });
 }
 
+function updateAnimal(req, res) {
+    var animalId = req.params.id;
+    var update = req.body;
+
+    animal.findByIdAndUpdate(animalId, update, {new: true}).populate({ path: 'user' }).exec((err, animalUpdated) => {
+        if (err) {
+            res.status(500).send({
+                message: 'No se ha podido realizar la actualización del animal'
+            });
+        } else {
+            if (!animalUpdated) {
+                res.status(404).send({
+                    message: 'No se ha encontrado el animal'
+                });
+            } else {
+                res.status(200).send({
+                    animal: animalUpdated
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveAnimal,
     getAnimals,
-    getAnimal
+    getAnimal,
+    updateAnimal
 };
