@@ -53,7 +53,28 @@ function saveAnimal(req, res) {
     }
 }
 
+function getAnimals(req, res) {
+    animal.find({}).populate({path: 'user'}).exec((err, animals) => {
+        if (err) {
+            res.status(500).send({
+                message: 'No se ha podido realizar la búsqueda de animales'
+            });
+        } else {
+            if (!animals) {
+                res.status(404).send({
+                    message: 'No se han encontrado animales'
+                });
+            } else {
+                res.status(200).send({
+                    animals
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     pruebas,
-    saveAnimal
+    saveAnimal,
+    getAnimals
 };

@@ -13,5 +13,6 @@ var mdwUpload = multipart({
 
 api.get('/pruebas-animales', mdwAuth.ensureAuth, animalController.pruebas);
 api.post('/animal', mdwAuth.ensureAuth, animalController.saveAnimal);
+api.get('/get-animals', animalController.getAnimals);
 
 module.exports = api;
