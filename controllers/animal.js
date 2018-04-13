@@ -54,7 +54,9 @@ function saveAnimal(req, res) {
 }
 
 function getAnimals(req, res) {
-    animal.find({}).populate({path: 'user'}).exec((err, animals) => {
+    animal.find({}).populate({
+        path: 'user'
+    }).exec((err, animals) => {
         if (err) {
             res.status(500).send({
                 message: 'No se ha podido realizar la búsqueda de animales'
@@ -73,8 +75,33 @@ function getAnimals(req, res) {
     });
 }
 
+function getAnimal(req, res) {
+    var animalId = req.params.id;
+
+    animal.findById(animalId).populate({
+        path: 'user'
+    }).exec((err, animalFromDb) => {
+        if (err) {
+            res.status(500).send({
+                message: 'No se ha podido realizar la búsqueda del animal'
+            });
+        } else {
+            if (!animalFromDb) {
+                res.status(404).send({
+                    message: 'No se ha encontrado el animal'
+                });
+            } else {
+                res.status(200).send({
+                    animal: animalFromDb
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveAnimal,
-    getAnimals
+    getAnimals,
+    getAnimal
 };
