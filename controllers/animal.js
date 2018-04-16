@@ -103,7 +103,11 @@ function updateAnimal(req, res) {
     var animalId = req.params.id;
     var update = req.body;
 
-    animal.findByIdAndUpdate(animalId, update, {new: true}).populate({ path: 'user' }).exec((err, animalUpdated) => {
+    animal.findByIdAndUpdate(animalId, update, {
+        new: true
+    }).populate({
+        path: 'user'
+    }).exec((err, animalUpdated) => {
         if (err) {
             res.status(500).send({
                 message: 'No se ha podido realizar la actualización del animal'
@@ -189,6 +193,29 @@ function getImageFile(req, res) {
     });
 }
 
+function deleteAnimal(req, res) {
+    var animalId = req.params.id;
+
+    animal.findByIdAndRemove(animalId, (err, animalRemoved) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error al borrar el animal'
+            });
+        } else {
+            if (!animalRemoved) {
+                res.status(404).send({
+                    message: 'No se ha podido borrar el animal'
+                });
+            } else {
+                res.status(200).send({
+                    message: 'Animal borrado correctamente',
+                    animal: animalRemoved
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveAnimal,
@@ -196,5 +223,6 @@ module.exports = {
     getAnimal,
     updateAnimal,
     uploadImage,
-    getImageFile
+    getImageFile,
+    deleteAnimal
 };
