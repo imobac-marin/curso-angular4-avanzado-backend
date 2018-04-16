@@ -122,10 +122,79 @@ function updateAnimal(req, res) {
     });
 }
 
+function uploadImage(req, res) {
+    var animalId = req.params.id;
+
+    if (req.files) {
+        var filePath = req.files.image.path;
+        var fileSplit = filePath.split('\\');
+        var existingFileName = fileSplit[2];
+        var extensionFileSplit = existingFileName.split('.');
+        var extensionFile = extensionFileSplit[1];
+
+        if (extensionFile.toLowerCase() == 'png' || extensionFile.toLowerCase() == 'jpg' || extensionFile.toLowerCase() == 'jpeg' || extensionFile.toLowerCase() == 'gif') {
+            animal.findByIdAndUpdate(animalId, {
+                image: existingFileName
+            }, {
+                new: true
+            }, (err, animalUpdated) => {
+                if (err) {
+                    res.status(500).send({
+                        message: 'Error al actualizar el animal'
+                    });
+                } else {
+                    if (!animalUpdated) {
+                        res.status(404).send({
+                            message: 'No se ha podido actualizar el animal'
+                        });
+                    } else {
+                        res.status(200).send({
+                            user: animalUpdated,
+                            image: existingFileName
+                        });
+                    }
+                }
+            });
+        } else {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    res.status(200).send({
+                        message: 'Extension no válida y no se ha podido borrar el fichero'
+                    });
+                } else {
+                    res.status(200).send({
+                        message: 'Extension no válida'
+                    });
+                }
+            });
+        }
+    } else {
+        res.status(200).send({
+            message: 'No se han subido ficheros'
+        });
+    }
+}
+
+function getImageFile(req, res) {
+    var imageFile = req.params.imageFile;
+    var pathFile = './uploads/animals/' + imageFile;
+    fs.exists(pathFile, function (exists) {
+        if (exists) {
+            res.sendFile(path.resolve(pathFile));
+        } else {
+            res.status(404).send({
+                message: 'No se encuentra la imagen'
+            });
+        }
+    });
+}
+
 module.exports = {
     pruebas,
     saveAnimal,
     getAnimals,
     getAnimal,
-    updateAnimal
+    updateAnimal,
+    uploadImage,
+    getImageFile
 };
