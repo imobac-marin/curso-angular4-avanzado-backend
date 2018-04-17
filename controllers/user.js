@@ -79,11 +79,12 @@ function saveUser(req, res) {
 
 function login(req, res) {
     var params = req.body;
-    var email = params.email;
     var password = params.password;
+    var usuario = new user();
+    usuario.email = params.email;
 
     user.findOne({
-        email: email.toLowerCase()
+        email: usuario.email.toLowerCase()
     }, (err, isUser) => {
         if (err) {
             res.status(500).send({
@@ -94,15 +95,15 @@ function login(req, res) {
                 bcrypt.compare(password, isUser.password, (err, check) => {
                     if (check) {
                         // Comprobar y generar token
-                        if (params.getToken) {
+                        if (!params.getToken) {
                             //devolver token jwt
                             res.status(200).send({
                                 token: jwt.createToken(isUser),
-                                isUser
+                                usuario: isUser
                             });
                         } else {
                             res.status(200).send({
-                                isUser
+                                usuario: isUser
                             });
                         }
                     } else {
